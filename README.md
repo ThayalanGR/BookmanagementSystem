@@ -1,2 +1,1 @@
-# BookmanagementSystem
-this is a simple book management system which uses firebase for authentication and books management. for front end javascript frameworks like vue,js firebase.js and custom scripts
+# [js-x5x9vy](https://stackblitz.com/edit/js-x5x9vy)

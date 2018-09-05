@@ -1,13 +1,14 @@
-* {
+*{
+
   padding: 0;
-  margin :0;
-  border: 0;
-  vertical-align: baseline;
-  width: 100%;
+  outline: 0;
+  border:0;
+
 }
 
-body {
-  background-color: #f3f3f3;
-}
-.container-fluid {
+
+#mainImage {
+  background: url("https://jocelynbates.com/wp-content/uploads/2018/04/Books-Banner.png") no-repeat fixed;
+  background-size: cover;
+  
 }

@@ -11,14 +11,47 @@
       messagingSenderId: "95314198753"
     };
     firebase.initializeApp(config);
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            name = user.displayName
+            email = user.email
+            photoUrl = user.photoURL
+            emailVerified = user.emailVerified 
+            console.log(emailVerified)
+            if(emailVerified == true && email != "suhailtry@yahoo.com") {
+                notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
+                $('#notify').modal("show")
+                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/user/home/'
+            }
+            else if(emailVerified == true && email == "suhailtry@yahoo.com") {
+                notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
+                $('#notify').modal("show")
+                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/admin/home/'
+            }
+            else {
+                notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
+                $('#notify').modal("show")
+            }
+        }
+    })
 
-
+function writeUserData(userId, name, email, mobile, gender) {
+    firebase.database().ref('users/' + userId).set({
+        username: name,
+        email: email,
+        mobile: mobile,
+        gender: gender
+    });
+}
 
 // alert(0)
 const notifyRef = document.getElementById('notify')
 const notifyContentRef = document.getElementById('notifyContent')
 const regFormRef = document.getElementById('regForm')
 const logFormRef = document.getElementById('logForm')
+
+
+
 regFormRef.addEventListener('submit', (event) => {
     event.preventDefault()
     // console.log("success")
@@ -31,23 +64,42 @@ regFormRef.addEventListener('submit', (event) => {
     if(name != '' && email != '' && mobile.length >=10 && password != '') {
         console.log("passed")
         firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code
-        var errorMessage = error.message
-        notifyContentRef.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`
-        $('#notify').modal("show")
+            // Handle Errors here.
+            var errorCode = error.code
+            var errorMessage = error.message
+            notifyContentRef.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`
+            $('#notify').modal("show")
         })
+
+
+
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code
+                    var errorMessage = error.message
+                    notifyContentRef.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`
+                    $('#notify').modal("show")
+        })
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                var userId = user.uid
+                writeUserData(userId, name, email, mobile, gender)
+                user.sendEmailVerification().then(function() {
+                    console.log("email sent")
+                }).catch(function(error) {
+                    // An error happened.
+                    notifyContentRef.innerHTML = `<div class="alert alert-success">${error}</div>`
+                    $('#notify').modal("show")
+                })
+            }
+        })
+
         notifyContentRef.innerHTML = `<div class="alert alert-success">Registration Success! please verify your email address</div>`
         $('#notify').modal("show")
-        var user = firebase.auth().currentUser
-        user.sendEmailVerification().then(function() {
-                console.log("email sent")
-        }).catch(function(error) {
-        // An error happened.
-            notifyContentRef.innerHTML = `<div class="alert alert-success">${error}</div>`
-            $('#notify').modal("show")
+        // var user = firebase.auth().currentUser
 
-        })
+
 
     }else { 
         console.log("failed")
@@ -55,6 +107,8 @@ regFormRef.addEventListener('submit', (event) => {
         $('#notify').modal("show")
     }
 })
+
+
 
 
 logFormRef.addEventListener('submit', (event) => {
@@ -81,16 +135,20 @@ logFormRef.addEventListener('submit', (event) => {
             emailVerified = user.emailVerified
             
             console.log(emailVerified)
-            if(emailVerified == true) {
-                notifyContentRef.innerHTML = `<div class="alert alert-success">Login Success</div>`
+            if(emailVerified == true && email != "suhailtry@yahoo.com") {
+                notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
+                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/user/home/'
             }
-             else {
+            else if(email == "suhailtry@yahoo.com") {
+                notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
+                $('#notify').modal("show")
+                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/admin/home/'
+            }
+            else {
                 notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
-               $('#notify').modal("show")
-
+                $('#notify').modal("show")
            }
-
     }
     
     } else { 

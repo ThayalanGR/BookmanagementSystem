@@ -1,0 +1,14 @@
+*{
+
+  padding: 0;
+  outline: 0;
+  border:0;
+
+}
+
+
+#mainImage {
+  background: url("https://jocelynbates.com/wp-content/uploads/2018/04/Books-Banner.png") no-repeat fixed;
+  background-size: cover;
+  
+}

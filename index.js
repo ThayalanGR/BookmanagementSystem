@@ -21,12 +21,12 @@
             if(emailVerified == true && email != "suhailtry@yahoo.com") {
                 notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
-                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/user/home/'
+                window.location.href = 'http://localhost/book/user/home/'
             }
             else if(emailVerified == true && email == "suhailtry@yahoo.com") {
                 notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
-                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/admin/home/'
+                window.location.href = 'http://localhost/book/admin/home/'
             }
             else {
                 notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
@@ -52,7 +52,7 @@ const logFormRef = document.getElementById('logForm')
 
 
 
-regFormRef.addEventListener('submit', (event) => {
+regFormRef.addEventListener('submit', (event) => {z
     event.preventDefault()
     // console.log("success")
     let name = event.target.elements["name"].value
@@ -138,12 +138,12 @@ logFormRef.addEventListener('submit', (event) => {
             if(emailVerified == true && email != "suhailtry@yahoo.com") {
                 notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
-                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/user/home/'
+                window.location.href = 'http://localhost/book/user/home/'
             }
             else if(email == "suhailtry@yahoo.com") {
                 notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
-                window.location.href = 'http://80-hammerdottedcougar.cdr.co/book/admin/home/'
+                window.location.href = 'http://localhost/book/admin/home/'
             }
             else {
                 notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`

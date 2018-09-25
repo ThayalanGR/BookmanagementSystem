@@ -61,17 +61,17 @@ firebase.auth().onAuthStateChanged(function (user) {
         } else if (emailVerified == true && email == "suhailtry@yahoo.com") {
             notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
             $('#notify').modal("show")
-            window.location.href = 'http://localhost/book/admin/home/'
+            window.location.href = '../admin/home/'
         } else {
             // notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
             // $('#notify').modal("show")
-            window.location.href = 'http://localhost/book/'
+            window.location.href = '../'
 
 
         }
     } else {
         // No user is signed in.
-        window.location.href = 'http://localhost/book/'
+        window.location.href = '../'
 
     }
 });

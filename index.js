@@ -1,39 +1,37 @@
 //firebase initialisation
 
 
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyCCcNJtYhXmDKzYqPR_UnrnVGSa2n1hPMU",
-      authDomain: "bookmanagementsystem-46d5d.firebaseapp.com",
-      databaseURL: "https://bookmanagementsystem-46d5d.firebaseio.com",
-      projectId: "bookmanagementsystem-46d5d",
-      storageBucket: "bookmanagementsystem-46d5d.appspot.com",
-      messagingSenderId: "95314198753"
-    };
-    firebase.initializeApp(config);
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            name = user.displayName
-            email = user.email
-            photoUrl = user.photoURL
-            emailVerified = user.emailVerified 
-            console.log(emailVerified)
-            if(emailVerified == true && email != "suhailtry@yahoo.com") {
-                notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
-                $('#notify').modal("show")
-                window.location.href = 'http://localhost/book/user/home/'
-            }
-            else if(emailVerified == true && email == "suhailtry@yahoo.com") {
-                notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
-                $('#notify').modal("show")
-                window.location.href = 'http://localhost/book/admin/home/'
-            }
-            else {
-                notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
-                $('#notify').modal("show")
-            }
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyCCcNJtYhXmDKzYqPR_UnrnVGSa2n1hPMU",
+    authDomain: "bookmanagementsystem-46d5d.firebaseapp.com",
+    databaseURL: "https://bookmanagementsystem-46d5d.firebaseio.com",
+    projectId: "bookmanagementsystem-46d5d",
+    storageBucket: "bookmanagementsystem-46d5d.appspot.com",
+    messagingSenderId: "95314198753"
+};
+firebase.initializeApp(config);
+firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+        name = user.displayName
+        email = user.email
+        photoUrl = user.photoURL
+        emailVerified = user.emailVerified
+        console.log(emailVerified)
+        if (emailVerified == true && email != "suhailtry@yahoo.com") {
+            notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
+            $('#notify').modal("show")
+            window.location.href = 'http://localhost/book/user/home/'
+        } else if (emailVerified == true && email == "suhailtry@yahoo.com") {
+            notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
+            $('#notify').modal("show")
+            window.location.href = 'http://localhost/book/admin/home/'
+        } else {
+            notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
+            $('#notify').modal("show")
         }
-    })
+    }
+})
 
 function writeUserData(userId, name, email, mobile, gender) {
     firebase.database().ref('users/' + userId).set({
@@ -52,7 +50,7 @@ const logFormRef = document.getElementById('logForm')
 
 
 
-regFormRef.addEventListener('submit', (event) => {z
+regFormRef.addEventListener('submit', (event) => {
     event.preventDefault()
     // console.log("success")
     let name = event.target.elements["name"].value
@@ -61,9 +59,9 @@ regFormRef.addEventListener('submit', (event) => {z
     let password = event.target.elements["password"].value
     let gender = event.target.elements["gender"].value
     console.log(name, email, mobile, password, gender)
-    if(name != '' && email != '' && mobile.length >=10 && password != '') {
+    if (name != '' && email != '' && mobile.length >= 10 && password != '') {
         console.log("passed")
-        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code
             var errorMessage = error.message
@@ -73,21 +71,21 @@ regFormRef.addEventListener('submit', (event) => {z
 
 
 
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-                    // Handle Errors here.
-                    var errorCode = error.code
-                    var errorMessage = error.message
-                    notifyContentRef.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`
-                    $('#notify').modal("show")
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code
+            var errorMessage = error.message
+            notifyContentRef.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`
+            $('#notify').modal("show")
         })
 
-        firebase.auth().onAuthStateChanged(function(user) {
+        firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
                 var userId = user.uid
                 writeUserData(userId, name, email, mobile, gender)
-                user.sendEmailVerification().then(function() {
+                user.sendEmailVerification().then(function () {
                     console.log("email sent")
-                }).catch(function(error) {
+                }).catch(function (error) {
                     // An error happened.
                     notifyContentRef.innerHTML = `<div class="alert alert-success">${error}</div>`
                     $('#notify').modal("show")
@@ -101,7 +99,7 @@ regFormRef.addEventListener('submit', (event) => {z
 
 
 
-    }else { 
+    } else {
         console.log("failed")
         notifyContentRef.innerHTML = `<div class="alert alert-danger">please fill all the fields with correct values</div>`
         $('#notify').modal("show")
@@ -117,41 +115,39 @@ logFormRef.addEventListener('submit', (event) => {
     let email = event.target.elements["email"].value
     let password = event.target.elements["password"].value
     console.log(email, password)
-    if(email != '' && password != '') {
+    if (email != '' && password != '') {
         console.log("passed")
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
             // Handle Errors here.
             var errorCode = error.code
             var errorMessage = error.message
             notifyContentRef.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`
             $('#notify').modal("show")
         })
-       var user = firebase.auth().currentUser
+        var user = firebase.auth().currentUser
 
-        if(user != null) {
+        if (user != null) {
             name = user.displayName
             email = user.email
             photoUrl = user.photoURL
             emailVerified = user.emailVerified
-            
+
             console.log(emailVerified)
-            if(emailVerified == true && email != "suhailtry@yahoo.com") {
+            if (emailVerified == true && email != "suhailtry@yahoo.com") {
                 notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
                 window.location.href = 'http://localhost/book/user/home/'
-            }
-            else if(email == "suhailtry@yahoo.com") {
+            } else if (email == "suhailtry@yahoo.com") {
                 notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
                 window.location.href = 'http://localhost/book/admin/home/'
-            }
-            else {
+            } else {
                 notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
                 $('#notify').modal("show")
-           }
-    }
-    
-    } else { 
+            }
+        }
+
+    } else {
         console.log("failed")
         notifyContentRef.innerHTML = `<div class="alert alert-danger">please fill the login fields</div>`
         $('#notify').modal("show")

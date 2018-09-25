@@ -67,8 +67,10 @@ firebase.auth().onAuthStateChanged(function (user) {
                     var username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
                     // ...
                     unameContainerRef.innerHTML = username
+                    localStorage.setItem("userName", username)
                 })
                 manageUsersHandler()
+                collectionCountHandler()
 
             } else {
                 // notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
@@ -131,8 +133,73 @@ allBooksRef.addEventListener("click", allBooksHandler)
 
 
 // edit-profile
-const editProfileRef = _$("edit-profile")
-editProfileRef.addEventListener("click", editProfileHandler)
+const requestedBookRef = _$("requested-book")
+requestedBookRef.addEventListener("click", requestedBookHandler)
+
+
+
+////collection count setter
+
+function collectionCountHandler() {
+
+    const collectionCountRef = _$("collection-count")
+
+    firebase.database().ref('/requestbook/').once('value').then(function (snapshotinside) {
+        let arrCollection = []
+
+        snapshotinside.forEach(function (childSnapshotinside) {
+            console.log(childSnapshotinside.key)
+            arrCollection.push(childSnapshotinside.key)
+        })
+
+    collectionCountRef.innerHTML = arrCollection.length
+
+    })
+
+}
+
+
+
+
+
+//request handler
+
+function requestedBookHandler() {
+    mainContentRef.innerHTML = ``
+
+    mainHeadingRef.innerHTML = `<div class="text-Primary font-weight-bold h4 mt-2 mb-0">Manage Users</div>
+                                <br>
+                                <div class="row text-primary font-weight-bold">
+                                    <div class="col-1">S.no</div>
+                                    <div class="col-3">Bookname</div>
+                                    <div class="col-1">AuthorName</div>
+                                    <div class="col-4">category</div>
+                                    <div class="col-3">Requested by</div>
+                                </div>
+    `
+    firebase.database().ref('/requestbook/').once('value').then(function (snapshot) {
+        // var username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
+        console.log(snapshot)
+        let count = 1
+        let output = ``
+        snapshot.forEach(function (childSnapshot) {
+            var childData = childSnapshot.val();;
+            console.log(childSnapshot.val())
+            output = `<div class="row text-success">
+                        <div class="col-1">${count} .</div>
+                        <div class="col-3">${childSnapshot.val().authorname}</div>
+                        <div class="col-1">${childSnapshot.val().bookcategory}</div>
+                        <div class="col-4">${childSnapshot.val().bookname}</div>
+                        <div class="col-3">${childSnapshot.val().requestedby}</div>
+                      </div> <hr>`
+            mainContentRef.innerHTML += output
+            count++
+        })
+
+    })
+
+
+}
 
 
 
@@ -141,10 +208,19 @@ editProfileRef.addEventListener("click", editProfileHandler)
 //all handlers goes under here
 
 function manageUsersHandler() {
-    
+
     mainContentRef.innerHTML = ``
 
-    mainHeadingRef.innerHTML = `<div class="text-Primary font-weight-bold h4 mt-2 mb-0">Manage Users</div>`
+    mainHeadingRef.innerHTML = `<div class="text-Primary font-weight-bold h4 mt-2 mb-0">Manage Users</div>
+                                <br>
+                                <div class="row text-primary font-weight-bold">
+                                    <div class="col-1">S.no</div>
+                                    <div class="col-3">Username</div>
+                                    <div class="col-1">Gender</div>
+                                    <div class="col-4">Email</div>
+                                    <div class="col-3">Mobile</div>
+                                </div>
+    `
     firebase.database().ref('/users/').once('value').then(function (snapshot) {
         // var username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
         console.log(snapshot)
@@ -169,19 +245,62 @@ function manageUsersHandler() {
 }
 
 
+
 function bookHistoryHandler() {
+    mainContentRef.innerHTML = ``
+
+    mainHeadingRef.innerHTML = `<div class="text-Primary font-weight-bold h4 mt-2 mb-0">Book History</div>
+                                <br>
+                                <div class="row text-primary font-weight-bold">
+                                    <div class="col-1"> s.no</div>
+                                    <div class="col-3">UserName</div>
+                                    <div class="col-4">BookName</div>
+                                    <div class="col-4">AuthorName</div>
+                                </div>`
+    firebase.database().ref('/bookhistory/').once('value').then(function (snapshot) {
+        // var username = (snapshot.val() && snapshot.val().username) || 'Anonymous'
+        console.log(snapshot)
+        let count = 1
+
+        snapshot.forEach(function (childSnapshot) {
+
+
+            console.log(childSnapshot.key)
+
+            childSnapshot.forEach(function (childSnapshotinside) {
+                var childData = childSnapshotinside.key
+                let output = `<div class="row text-success">
+                                    <div class="col-1"> ${count} </div>
+                                    <div class="col-3" id="user-${childData}-${snapshot}">#</div>
+                                    <div class="col-4" id="book-${childData}-${snapshot}">#</div>
+                                    <div class="col-4" id="author-${childData}-${snapshot}">#</div>
+                                </div> <hr>
+                                `
+                mainContentRef.innerHTML += output
+                firebase.database().ref('/users/' + childSnapshot.key).once('value').then((snapshot) => {
+                    console.log(snapshot.val().username)
+                    _$(`user-${childData}-${snapshot}`).innerHTML = snapshot.val().username 
+                })
+                firebase.database().ref('/books/' + childData).once('value').then((snapshot) => {
+                    console.log(snapshot.val().authorname)
+                    _$(`book-${childData}-${snapshot}`).innerHTML = snapshot.val().bookname
+                    _$(`author-${childData}-${snapshot}`).innerHTML = snapshot.val().authorname
+                })
+                count++
+
+            })
+        })
+
+    })
+
 
 
 }
 
 
 
-//add-book-form  event listener 
 
-
-
-
-
+//add books handler
 
 function addBookHandler() {
 
@@ -371,45 +490,39 @@ function allBooksHandler() {
 }
 
 
-function editProfileHandler() {
-
-}
-
-
 // /deleteBook function
 
 function deleteBook(bookId) {
-        console.log(bookId)
-        const deleteRef = firebase.database().ref('books/'+bookId)
-        // console.log(deleteRef)
+    console.log(bookId)
+    const deleteRef = firebase.database().ref('books/' + bookId)
+    // console.log(deleteRef)
 
-        deleteRef.remove(function(error) {
-            if (error) {
-                // The write failed...
-                notifyContentRef.innerHTML = `<div class="alert alert-danger text-center">Something went Wrong.. ${error}</div>`
-                // notifyRef.modal("show")
-                $('#notify').modal("show")
-                setTimeout(function () {
-                    notifyContentRef.innerHTML = ``
-                    // notifyRef.modal("hide")
-                    $('#notify').modal("hide")
-                    allBooksHandler()
-                }, 3000)
-            } else {
-                // Data saved successfully!
-                notifyContentRef.innerHTML = `<div class="alert alert-success text-center">Book Deleted successfully</div>`
-                // notifyRef.modal("show")
-                $('#notify').modal("show")
+    deleteRef.remove(function (error) {
+        if (error) {
+            // The write failed...
+            notifyContentRef.innerHTML = `<div class="alert alert-danger text-center">Something went Wrong.. ${error}</div>`
+            // notifyRef.modal("show")
+            $('#notify').modal("show")
+            setTimeout(function () {
+                notifyContentRef.innerHTML = ``
+                // notifyRef.modal("hide")
+                $('#notify').modal("hide")
+                allBooksHandler()
+            }, 3000)
+        } else {
+            // Data saved successfully!
+            notifyContentRef.innerHTML = `<div class="alert alert-success text-center">Book Deleted successfully</div>`
+            // notifyRef.modal("show")
+            $('#notify').modal("show")
 
-                setTimeout(function () {
-                    notifyContentRef.innerHTML = ``
-                    // notifyRef.modal("hide")
-                    $('#notify').modal("hide")
-                    allBooksHandler()
-                }, 3000)
-            }
-        })
+            setTimeout(function () {
+                notifyContentRef.innerHTML = ``
+                // notifyRef.modal("hide")
+                $('#notify').modal("hide")
+                allBooksHandler()
+            }, 3000)
+        }
+    })
 
 
 }
-

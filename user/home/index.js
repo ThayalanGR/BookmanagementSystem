@@ -65,13 +65,13 @@ firebase.auth().onAuthStateChanged(function (user) {
         } else {
             // notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
             // $('#notify').modal("show")
-            window.location.href = '../'
+            window.location.href = '../../'
 
 
         }
     } else {
         // No user is signed in.
-        window.location.href = '../'
+        window.location.href = '../../'
 
     }
 });
@@ -82,7 +82,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 logoutRef.addEventListener("click", function logout() {
     firebase.auth().signOut().then(function () {
         // Sign-out successful.
-        window.location.href = 'http://localhost/book/'
+        window.location.href = '../../'
         console.log("logout success")
     }).catch(function (error) {
         // An error happened.

@@ -58,7 +58,7 @@ firebase.auth().onAuthStateChanged(function (user) {
             if (emailVerified == true && email != "suhailtry@yahoo.com") {
                 notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 $('#notify').modal("show")
-                window.location.href = '../user/home/'
+                window.location.href = '../../user/home/'
             } else if (emailVerified == true && email == "suhailtry@yahoo.com") {
                 // notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
                 // $('#notify').modal("show")
@@ -75,18 +75,18 @@ firebase.auth().onAuthStateChanged(function (user) {
             } else {
                 // notifyContentRef.innerHTML = `<div class="alert alert-danger">please verify your email address.</div>`
                 // $('#notify').modal("show")
-                window.location.href = '../'
+                window.location.href = '../../'
 
 
             }
         } else {
             // No user is signed in.
-            window.location.href = '../'
+            window.location.href = '../../'
 
         }
     } else {
         // No user is signed in.
-        window.location.href = '../'
+        window.location.href = '../../'
 
     }
 })

@@ -21,7 +21,7 @@ firebase.auth().onAuthStateChanged(function (user) {
         if (emailVerified == true && email != "suhailtry@yahoo.com") {
             notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
             $('#notify').modal("show")
-            window.location.href = 'book/user/home/'
+            window.location.href = 'user/home/'
         } else if (emailVerified == true && email == "suhailtry@yahoo.com") {
             notifyContentRef.innerHTML = `<div class="alert alert-success">Loging you in</div>`
             $('#notify').modal("show")
